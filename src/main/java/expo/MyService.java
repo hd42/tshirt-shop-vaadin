@@ -9,40 +9,63 @@ import org.springframework.web.client.RestTemplate;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
+import expo.domain.TShirtOrder;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
-import expo.domain.EmailSubscription;
 
 @Service
 class MyService {
-
+    
+    private Validator validator;
+    
+    @PostConstruct
+    void init() {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+    
     /**
-     * Posts subscription details to a server that takes care of sending you
-     * a personalized message, based on your interests.
+     * Posts an order with given details. All details are required.
      * 
-     * @param s the subscription details
+     * @param name The name for the customer
+     * @param email The email for the customer
+     * @param shirtSize The size of shirt
      */
-    public void signUp(EmailSubscription s) {
-
+    public void placeOrder(String name, String email, String shirtSize) {
+        
         try {
-        	
+            TShirtOrder order = new TShirtOrder(name, email, shirtSize);
+            
+            Set<ConstraintViolation<TShirtOrder>> validate = validator.validate(order);
+            if(!validate.isEmpty()) {
+                Notification.show("All parameters must be set and valid!", Notification.Type.ERROR_MESSAGE);
+                return;
+            }
+            
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<EmailSubscription> entity = new HttpEntity<EmailSubscription>(s,headers);
-            String url = "http://vaad.in/submitj1";
+            HttpEntity<TShirtOrder> entity = new HttpEntity<>(order,headers);
+            String url = "http://vaad.in/orderTShirt";
+            // String url = "http://localhost:8080/orderTShirt";
             try {
                 restTemplate.put(url, entity);
-                Notification notification = new Notification("Congrats!", "Your details were submitted correctly, you should soon receive an email with tips to get started with Vaadin.");
+                Notification notification = new Notification("Congrats!", "Your details were submitted correctly, you should soon receive a confirmation email with tips to get started with Vaadin.");
                 notification.setDelayMsec(5000);
                 notification.show(Page.getCurrent());
             } catch (RestClientException e) {
-                Notification.show("Saving entity failed: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                Notification.show("Sending order failed: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 return;
             }
 
         } catch (Exception ex) {
-                Notification.show("Saving entity failed: " + ex.getMessage().substring(0, 28) + "...", Notification.Type.ERROR_MESSAGE);
+                Notification.show("Sending order failed: " + ex.getMessage().substring(0, 28) + "...", Notification.Type.ERROR_MESSAGE);
                 ex.printStackTrace();
         }
     }

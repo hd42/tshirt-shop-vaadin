@@ -1,13 +1,11 @@
 package expo;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
-import expo.domain.EmailSubscription;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.viritin.label.RichText;
 
 @Theme("valo")
 @SpringUI
@@ -17,38 +15,28 @@ public class MyUI extends UI {
     @Autowired
     MyService service;
 
-    final TextField name = new TextField("Name");
-    final TextField email = new TextField("Email");
-    final Label text = new Label("Click on the button below to get an email with"
-            + " <b>video tutorials</b> and more to help you get started with the"
-            + " <b>open source Vaadin Framework</b>.", ContentMode.HTML);
+    final Label text = new RichText().withMarkDownResource("/welcome.md");
+
+    final TextField shirtSize = new TextField("Shirt size");
+    // TODO add name and email TextFields as well
 
     @Override
     protected void init(VaadinRequest request) {
 
         // Add the two textfields created above to a layout and make 
         // that the main layout of the UI
-        final VerticalLayout layout = new VerticalLayout(name, email, text);
+        final VerticalLayout layout = new VerticalLayout(text, shirtSize);
         setContent(layout);
 
-        // Bind a POJO for name and email to this view 
-        EmailSubscription s = new EmailSubscription();
-        BeanFieldGroup.bindFieldsUnbuffered(s, this);
-
         // Create and add a button to the screen (http://demo.vaadin.com/sampler/#ui/interaction/button)
-        Button button = new Button("Send email");
+        Button button = new Button("Place order");
         layout.addComponents(button);
+        
+        button.addClickListener(e -> {
+            // TODO call 'service' with the data collected form the form
+            Notification.show("FIXME, Just testing!");
+        });
 
-        /* TODO 
-         * Create a ClickListener for the button and call the service (Autowired above)
-         * whenever somebody clicks on the button. 
-         * 
-         * ANSWER:
-         * 
-         * button.addClickListener(e -> {
-         *    service.signUp(s);
-         *  });
-         */
         // Some visual styling for the layout for nicer look 'n' feel. 
         // Alternatively doable in CSS/Sass
         layout.setMargin(true);

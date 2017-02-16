@@ -17,18 +17,16 @@ public class MyUI extends UI {
     @Autowired
     MyService service;
 
-    final Label text = new HtmlLabel("welcome.html");
-
-    final ComboBox<String> shirtSize = new ComboBox<>("Shirt size");
-
-
-    // TODO add name and email TextFields as well
-
     @Override
     protected void init(VaadinRequest request) {
+        final Label text = new HtmlLabel("welcome.html");
 
+        final ComboBox<String> shirtSize = new ComboBox<>("Shirt size");
         shirtSize.setEmptySelectionAllowed(false);
         shirtSize.setItems("Small", "Medium", "Large", "Extra Large");
+
+        // TODO add name and email TextFields as well
+
 
         // Create and add a button to the screen (http://demo.vaadin.com/sampler/#ui/interaction/button)
         Button button = new Button("Place order");

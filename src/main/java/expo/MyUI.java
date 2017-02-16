@@ -1,13 +1,15 @@
 package expo;
 
-import com.vaadin.annotations.Theme;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.viritin.label.RichText;
 
-@Theme("valo")
+import java.io.IOException;
+
+
 @SpringUI
 public class MyUI extends UI {
 
@@ -15,32 +17,33 @@ public class MyUI extends UI {
     @Autowired
     MyService service;
 
-    final Label text = new RichText().withMarkDownResource("/welcome.md");
+    final Label text = new HtmlLabel("welcome.html");
 
-    final TextField shirtSize = new TextField("Shirt size");
+    final ComboBox<String> shirtSize = new ComboBox<>("Shirt size");
+
+
     // TODO add name and email TextFields as well
 
     @Override
     protected void init(VaadinRequest request) {
 
-        // Add the two textfields created above to a layout and make 
-        // that the main layout of the UI
-        final VerticalLayout layout = new VerticalLayout(text, shirtSize);
-        setContent(layout);
+        shirtSize.setEmptySelectionAllowed(false);
+        shirtSize.setItems("Small", "Medium", "Large", "Extra Large");
 
         // Create and add a button to the screen (http://demo.vaadin.com/sampler/#ui/interaction/button)
         Button button = new Button("Place order");
-        layout.addComponents(button);
-        
+        button.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        button.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+
         button.addClickListener(e -> {
             // TODO call 'service' with the data collected form the form
             Notification.show("FIXME, Just testing!");
         });
 
-        // Some visual styling for the layout for nicer look 'n' feel. 
-        // Alternatively doable in CSS/Sass
-        layout.setMargin(true);
-        layout.setSpacing(true);
+
+        // Add the two textfields created above to a layout and make
+        // that the main layout of the UI
+        setContent(new VerticalLayout(text, shirtSize, /* TODO: add fields here */ button));
     }
 
 }

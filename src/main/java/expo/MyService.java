@@ -55,7 +55,7 @@ class MyService {
             String url = "http://vaad.in/orderTShirt";
             // String url = "http://localhost:8080/orderTShirt";
             try {
-                restTemplate.put(url, entity);
+                restTemplate.postForLocation(url, entity);
                 Notification notification = new Notification("Congrats!", "Your details were submitted correctly, you should soon receive a confirmation email with tips to get started with Vaadin.");
                 notification.setDelayMsec(5000);
                 notification.show(Page.getCurrent());

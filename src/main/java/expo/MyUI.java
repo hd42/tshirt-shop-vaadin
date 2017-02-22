@@ -23,7 +23,7 @@ public class MyUI extends UI {
 
         final ComboBox<String> shirtSize = new ComboBox<>("Shirt size");
         shirtSize.setEmptySelectionAllowed(false);
-        shirtSize.setItems("Small", "Medium", "Large", "Extra Large");
+        shirtSize.setItems("Medium", "Large", "Extra Large");
 
         // TODO add name and email TextFields as well
 

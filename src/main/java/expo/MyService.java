@@ -10,7 +10,8 @@ import org.springframework.web.client.RestTemplate;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
 import expo.domain.TShirtOrder;
-import java.util.Set;
+
+import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -27,6 +28,10 @@ class MyService {
     void init() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
+    }
+
+    List<String> getSizes(){
+        return Arrays.asList("Small", "Medium", "Large", "Extra Large");
     }
 
     public void placeOrder(TShirtOrder order){
@@ -60,6 +65,7 @@ class MyService {
             ex.printStackTrace();
         }
     }
+
     
     /**
      * Posts an order with given details. All details are required.

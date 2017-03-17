@@ -16,6 +16,9 @@ public class TShirtOrder {
     @NotEmpty
     private String shirtSize;
 
+    public TShirtOrder() {
+    }
+
     public TShirtOrder(String name, String email, String shirtSize) {
         this.name = name;
         this.email = email;

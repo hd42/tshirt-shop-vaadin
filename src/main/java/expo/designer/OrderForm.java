@@ -1,9 +1,11 @@
 package expo.designer;
 
 
+import java.util.List;
+
 public class OrderForm extends OrderFormDesign {
 
-    void setSizes(String... sizes) {
+    public void setSizes(List<String> sizes) {
         shirtSize.setItems(sizes);
     }
 }

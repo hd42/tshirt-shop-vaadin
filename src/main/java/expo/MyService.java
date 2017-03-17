@@ -28,25 +28,16 @@ class MyService {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
-    
-    /**
-     * Posts an order with given details. All details are required.
-     * 
-     * @param name The name for the customer
-     * @param email The email for the customer
-     * @param shirtSize The size of shirt
-     */
-    public void placeOrder(String name, String email, String shirtSize) {
-        
+
+    public void placeOrder(TShirtOrder order){
         try {
-            TShirtOrder order = new TShirtOrder(name, email, shirtSize);
-            
+
             Set<ConstraintViolation<TShirtOrder>> validate = validator.validate(order);
             if(!validate.isEmpty()) {
                 Notification.show("All parameters must be set and valid!", Notification.Type.ERROR_MESSAGE);
                 return;
             }
-            
+
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -65,9 +56,21 @@ class MyService {
             }
 
         } catch (Exception ex) {
-                Notification.show("Sending order failed: " + ex.getMessage().substring(0, 28) + "...", Notification.Type.ERROR_MESSAGE);
-                ex.printStackTrace();
+            Notification.show("Sending order failed: " + ex.getMessage().substring(0, 28) + "...", Notification.Type.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
+    }
+    
+    /**
+     * Posts an order with given details. All details are required.
+     * 
+     * @param name The name for the customer
+     * @param email The email for the customer
+     * @param shirtSize The size of shirt
+     */
+    public void placeOrder(String name, String email, String shirtSize) {
+        placeOrder(new TShirtOrder(name, email, shirtSize));
+
     }
 
 }

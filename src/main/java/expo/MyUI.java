@@ -1,5 +1,6 @@
 package expo;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 
 @SpringUI
+@Theme("mytheme")
 public class MyUI extends UI {
 
     // This Spring service is your backend. It has been autowired thanks to springframework

@@ -27,7 +27,9 @@ public class MyUI extends UI {
         shirtSize.setEmptySelectionAllowed(false);
         shirtSize.setItems(service.getSizes());
 
-        // TODO add name and email TextFields as well
+        TextField name = new TextField("Name");
+        TextField email = new TextField("Email");
+
 
 
         // Create and add a button to the screen (http://demo.vaadin.com/sampler/#ui/interaction/button)
@@ -43,7 +45,7 @@ public class MyUI extends UI {
 
         // Add the two textfields created above to a layout and make
         // that the main layout of the UI
-        setContent(new VerticalLayout(text, shirtSize, /* TODO: add fields here */ button));
+        setContent(new VerticalLayout(text, shirtSize, name, email, button));
     }
 
 }

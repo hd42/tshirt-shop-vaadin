@@ -1,14 +1,20 @@
 package expo;
 
+import static org.linkki.core.ui.section.annotations.AvailableValuesType.DYNAMIC;
+
+import java.util.List;
+
+import org.linkki.core.ui.components.ItemCaptionProvider.ToStringCaptionProvider;
+import org.linkki.core.ui.section.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.ui.UI;
 
-import java.io.IOException;
+import expo.domain.TShirtOrder;
 
 
 @SpringUI
@@ -21,31 +27,46 @@ public class MyUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        final Label text = new HtmlLabel("welcome.html");
-
-        final ComboBox<String> shirtSize = new ComboBox<>("Shirt size");
-        shirtSize.setEmptySelectionAllowed(false);
-        shirtSize.setItems(service.getSizes());
-
-        TextField name = new TextField("Name");
-        TextField email = new TextField("Email");
-
-
-
-        // Create and add a button to the screen (http://demo.vaadin.com/sampler/#ui/interaction/button)
-        Button button = new Button("Place order");
-        button.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        button.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-
-        button.addClickListener(e -> {
-            // TODO call 'service' with the data collected form the form
-            Notification.show("FIXME, Just testing!");
-        });
-
-
-        // Add the two textfields created above to a layout and make
-        // that the main layout of the UI
-        setContent(new VerticalLayout(text, shirtSize, name, email, button));
+        DefaultPmoPage shirtPage = new DefaultPmoPage(new ShirtPmo(service));
+        shirtPage.init();
+        setContent(shirtPage);
     }
+    
+	@UISection(caption="Welcome")
+	public static class ShirtPmo{
 
+	    private MyService service;
+		private TShirtOrder order;
+	    
+	    public ShirtPmo(MyService service){
+			this.service = service;
+			order = new TShirtOrder();
+	    }
+	    
+	    @ModelObject
+	    public TShirtOrder getOrder(){
+	    	return order;
+	    }
+		
+		@UITextField(position=10, label="Name")
+		public void name() {
+		}
+		
+		@UITextField(position=20, label="Email")
+		public void email() {
+		}
+		
+		@UIComboBox(position=30, content=DYNAMIC, itemCaptionProvider=ToStringCaptionProvider.class)
+		public void shirtSize() {
+		}
+		public List<String> getShirtSizeAvailableValues(){
+			return service.getSizes();
+		}
+
+		@UIButton(position=40, showLabel=false, caption="Place order", shortcutKeyCode=ShortcutAction.KeyCode.ENTER)
+		public void order(){
+			service.placeOrder(order);
+		}
+		
+	}
 }
